@@ -9,8 +9,13 @@
   "keywords": [
     "weasyprint",
     "pdf",
-    "htmltopdf"
+    "htmltopdf",
+    "wrapper"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dills122/weasyprint-wrapper"
+  },
   "author": "Dylan Steele",
   "license": "MIT",
   "dependencies": {
