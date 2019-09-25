@@ -2,7 +2,7 @@
 
 A node wrapper module for use with the weasyprint cli
 
-This module was heavily inspired by this [repo](https://github.com/tdzienniak/node-weasyprint) that was formally an npm module.
+This module was a copy of this [repo](https://github.com/tdzienniak/node-weasyprint) with minor updates and reuploaded back to npm.
 
 
 To install
