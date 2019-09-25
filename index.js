@@ -22,6 +22,10 @@ function weasyprint(input, options, callback) {
 
     var args = [weasyprint.command];
 
+    keys.forEach(function (key, index, arry) {
+        arry[index] = key.length === 1 ? '-' + key : '--' + slang.dasherize(key);
+    });
+
     const isUrl = /^(https?|file):\/\//.test(input);
 
     //if format is not specified and we are reading from stdin, than set default pdf format

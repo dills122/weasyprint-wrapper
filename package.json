@@ -12,5 +12,8 @@
     "htmltopdf"
   ],
   "author": "",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "slang": "^0.3.0"
+  }
 }
