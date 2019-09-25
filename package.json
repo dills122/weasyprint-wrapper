@@ -11,7 +11,7 @@
     "pdf",
     "htmltopdf"
   ],
-  "author": "",
+  "author": "Dylan Steele",
   "license": "MIT",
   "dependencies": {
     "slang": "^0.3.0"
