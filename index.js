@@ -19,7 +19,8 @@ function weasyprint(input, options, callback) {
 
     var output = options.output;
     delete options.output;
-
+    
+    var keys = Object.keys(options);
     var args = [weasyprint.command];
 
     keys.forEach(function (key, index, arry) {
