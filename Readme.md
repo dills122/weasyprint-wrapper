@@ -1,5 +1,7 @@
 # Weasyprint Wrapper
 
+[![CodeFactor](https://www.codefactor.io/repository/github/dills122/weasyprint-wrapper/badge)](https://www.codefactor.io/repository/github/dills122/weasyprint-wrapper)
+
 A node wrapper module for use with the weasyprint cli
 
 This module was a copy of this [repo](https://github.com/tdzienniak/node-weasyprint) with minor updates and reuploaded back to npm.
