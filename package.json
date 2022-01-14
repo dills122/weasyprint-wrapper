@@ -1,16 +1,16 @@
 {
   "name": "weasyprint-wrapper",
   "version": "0.1.2",
-  "description": "wrapper node module for weasyprint pdf generator",
+  "description": "wrapper for weasyprint pdf generator",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "keywords": [
     "weasyprint",
     "pdf",
     "htmltopdf",
-    "wrapper"
+    "wrapper",
+    "cli-wrapper",
+    "weasyprint-pdf",
+    "pdf-generator"
   ],
   "repository": {
     "type": "git",
@@ -18,7 +18,9 @@
   },
   "author": "Dylan Steele",
   "license": "MIT",
-  "dependencies": {
-    "slang": "^0.3.0"
+  "dependencies": {},
+  "engines": {
+    "node": ">= 10.0.0",
+    "npm": ">= 5.6.0"
   }
 }
