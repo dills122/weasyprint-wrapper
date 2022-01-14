@@ -1,6 +1,6 @@
 {
   "name": "weasyprint-wrapper",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "wrapper for weasyprint pdf generator",
   "main": "index.js",
   "keywords": [
