@@ -1,5 +1,11 @@
-const spawn = require('child_process').spawn;
-const slang = require('slang');
+const {spawn} = require('child_process');
+
+// Pulled from `slang` lib to remove the dep
+function dasherize(input) {
+    return input.replace(/\W+/g, '-')
+        .replace(/([a-z\d])([A-Z])/g, '$1-$2')
+        .toLowerCase();
+}
 
 function quote(val) {
     // escape and quote the value if it is a string and this isn't windows
@@ -19,12 +25,12 @@ function weasyprint(input, options, callback) {
 
     var output = options.output;
     delete options.output;
-    
+
     var keys = Object.keys(options);
     var args = [weasyprint.command];
 
     keys.forEach(function (key, index, arry) {
-        arry[index] = key.length === 1 ? '-' + key : '--' + slang.dasherize(key);
+        arry[index] = key.length === 1 ? '-' + key : '--' + dasherize(key);
     });
 
     const isUrl = /^(https?|file):\/\//.test(input);
@@ -57,7 +63,7 @@ function weasyprint(input, options, callback) {
     }
 
     // return stdout stream so we can pipe
-    return child.stdout
+    return child.stdout;
 }
 
 weasyprint.command = 'weasyprint';
