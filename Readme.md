@@ -1,42 +1,89 @@
 # Weasyprint Wrapper
 
-[![CodeFactor](https://www.codefactor.io/repository/github/dills122/weasyprint-wrapper/badge)](https://www.codefactor.io/repository/github/dills122/weasyprint-wrapper)
+A Node.js wrapper around the `weasyprint` CLI.
 
-A node wrapper module for use with the weasyprint cli
+## Install
 
-This module was a copy of this [repo](https://github.com/tdzienniak/node-weasyprint) with minor updates and reuploaded back to npm.
-
-
-To install
-
-```
+```bash
 npm i weasyprint-wrapper
 ```
 
-Example use
+`weasyprint` must already be installed and available in your `PATH`.
 
-```javascript
+## Build
+
+```bash
+npm run build
+```
+
+Build output:
+
+- `dist/index.cjs` for CommonJS (`require`)
+- `dist/index.mjs` for ESM (`import`)
+
+## Usage
+
+### CommonJS
+
+```js
+const fs = require('fs');
 const weasyprint = require('weasyprint-wrapper');
 
-//specify the location of weasyprint cli if not in PATH
-weasyprint.command = '~/programs/weasyprint';
+weasyprint.command = '/usr/local/bin/weasyprint';
 
-// URL
-weasyprint('http://google.com/', { pageSize: 'letter' })
+weasyprint('https://example.com', { pageSize: 'letter', mediaType: 'print' })
   .pipe(fs.createWriteStream('out.pdf'));
-  
-// HTML
+```
+
+### ESM
+
+```js
+import fs from 'node:fs';
+import weasyprint from 'weasyprint-wrapper';
+
+weasyprint.command = '/usr/local/bin/weasyprint';
+
 weasyprint('<h1>Test</h1><p>Hello world</p>')
-  .pipe(res);
+  .pipe(fs.createWriteStream('out.pdf'));
+```
 
-// Stream input and output
-var stream = weasyprint(fs.createReadStream('file.html'));
+### Input Types
 
-// output to a file directly
-weasyprint('http://apple.com/', { output: 'out.pdf' });
+- URL string
+- HTML string
+- `Buffer`
+- readable stream
 
-// Optional callback
-weasyprint('http://google.com/', { pageSize: 'letter' }, function (err, stream) {
-  // do whatever with the stream
+```js
+const fs = require('fs');
+const weasyprint = require('weasyprint-wrapper');
+
+weasyprint(fs.createReadStream('file.html'))
+  .pipe(fs.createWriteStream('out-from-stream.pdf'));
+
+weasyprint('https://example.com', { output: 'out-direct.pdf' });
+
+weasyprint('https://example.com', { pageSize: 'letter' }, (err, stream) => {
+  if (err) {
+    console.error(err);
+    return;
+  }
+
+  stream.pipe(fs.createWriteStream('out-callback.pdf'));
 });
 ```
+
+## Options
+
+Options are converted to CLI flags:
+
+- single-char keys become short flags (`{ f: 'pdf' }` -> `-f pdf`)
+- camelCase keys become kebab-case long flags (`{ pageSize: 'A4' }` -> `--page-size A4`)
+- boolean `true` values are emitted as valueless flags (`{ presentationalHints: true }` -> `--presentational-hints`)
+- array values repeat the same flag for each value
+
+Special option:
+
+- `output`: output file path (`-` is used by default for stdout)
+
+When no output file is set and no explicit format is passed, the wrapper defaults to `-f pdf`.
