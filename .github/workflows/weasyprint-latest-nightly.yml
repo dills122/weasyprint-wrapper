@@ -1,49 +1,13 @@
-name: CI
+name: WeasyPrint Latest
 
 on:
-  push:
-    branches:
-      - master
-      - main
-      - "codex/**"
-  pull_request:
+  schedule:
+    - cron: "0 10 * * 1"
+  workflow_dispatch:
 
 jobs:
-  test:
-    name: Node ${{ matrix.node }}
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        node: [18, 20, 22]
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ matrix.node }}
-          cache: npm
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Lint
-        run: npm run lint
-
-      - name: Format check
-        run: npm run format:check
-
-      - name: Run unit + module tests
-        run: npm test
-
-      - name: Verify package contents
-        run: npm run pack:check
-
-  smoke-latest-weasyprint:
-    name: Smoke latest WeasyPrint
+  smoke-latest:
+    name: WeasyPrint latest
     runs-on: ubuntu-latest
 
     steps:
