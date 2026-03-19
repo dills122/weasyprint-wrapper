@@ -1,0 +1,47 @@
+name: WeasyPrint Smoke
+
+on:
+  push:
+    branches:
+      - master
+      - main
+      - "codex/**"
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install WeasyPrint CLI
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y weasyprint
+          weasyprint --version
+          which weasyprint
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run real-world smoke test
+        run: npm run test:real
+
+      - name: Generate smoke PDF artifact
+        run: npm run smoke:pdf
+
+      - name: Upload generated PDF
+        uses: actions/upload-artifact@v4
+        with:
+          name: smoke-pdf
+          path: artifacts/test-smoke.pdf
+          if-no-files-found: error
