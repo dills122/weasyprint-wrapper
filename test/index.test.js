@@ -51,10 +51,14 @@ async function run(name, fn) {
 
     assert.strictEqual(invocations.length, 1);
     assert.strictEqual(invocations[0].command, 'weasyprint');
-    assert.deepStrictEqual(
-      invocations[0].args,
-      ['--page-size', 'letter', '--media-type', 'print', '-', '-']
-    );
+    assert.deepStrictEqual(invocations[0].args, [
+      '--page-size',
+      'letter',
+      '--media-type',
+      'print',
+      '-',
+      '-',
+    ]);
 
     child.emit('close', 0);
   });
@@ -76,7 +80,7 @@ async function run(name, fn) {
   await run('pipes stream input into stdin', async () => {
     const child = createMockChild();
 
-    weasyprint._spawn = (_command, _args) => child;
+    weasyprint._spawn = () => child;
 
     const src = Readable.from(['<h1>', 'Hello', '</h1>']);
     weasyprint(src);

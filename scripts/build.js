@@ -5,6 +5,7 @@ const root = path.resolve(__dirname, '..');
 const distDir = path.join(root, 'dist');
 const srcCore = path.join(root, 'src', 'core.js');
 
+fs.rmSync(distDir, { recursive: true, force: true });
 fs.mkdirSync(distDir, { recursive: true });
 
 const coreSource = fs.readFileSync(srcCore, 'utf8');

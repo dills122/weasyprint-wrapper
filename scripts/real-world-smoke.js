@@ -20,7 +20,9 @@ function ensureCommandAvailable() {
   const probe = spawnSync(weasyprintBin, ['--version'], { encoding: 'utf8' });
 
   if (probe.error || probe.status !== 0) {
-    const reason = probe.error ? probe.error.message : (probe.stderr || probe.stdout || 'unknown error').trim();
+    const reason = probe.error
+      ? probe.error.message
+      : (probe.stderr || probe.stdout || 'unknown error').trim();
     throw new Error(
       `Cannot execute weasyprint binary '${weasyprintBin}'. Set WEASYPRINT_BIN if needed. Details: ${reason}`
     );
@@ -109,7 +111,12 @@ async function main() {
   await runConversion(weasyprintCjs, urlInput, path.join(tmpDir, 'cjs-url.pdf'), 'cjs url input');
 
   const streamInput = fs.createReadStream(fixturePath);
-  await runConversion(weasyprintCjs, streamInput, path.join(tmpDir, 'cjs-stream.pdf'), 'cjs stream input');
+  await runConversion(
+    weasyprintCjs,
+    streamInput,
+    path.join(tmpDir, 'cjs-stream.pdf'),
+    'cjs stream input'
+  );
 
   const esmModule = await import(pathToFileURL(path.join(root, 'dist', 'index.mjs')).href);
   const weasyprintEsm = esmModule.default;

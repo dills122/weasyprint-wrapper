@@ -19,6 +19,13 @@
   ],
   "scripts": {
     "build": "node scripts/build.js",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier . --write",
+    "format:check": "prettier . --check",
+    "check": "npm run lint && npm run format:check && npm test",
+    "pack:check": "npm run build && node scripts/verify-pack.js",
+    "prepare": "node scripts/install-hooks.js",
     "prepack": "npm run build",
     "test": "npm run build && node test/index.test.js && node test/esm.test.mjs",
     "test:real": "npm run build && node scripts/real-world-smoke.js",
@@ -43,6 +50,11 @@
   "homepage": "https://github.com/dills122/weasyprint-wrapper#readme",
   "author": "Dylan Steele",
   "license": "MIT",
+  "devDependencies": {
+    "eslint": "^8.57.1",
+    "lefthook": "^1.11.14",
+    "prettier": "^3.6.2"
+  },
   "engines": {
     "node": ">=14.0.0"
   }
