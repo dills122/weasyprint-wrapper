@@ -16,7 +16,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        weasyprint-version: ["53.3", "57.2", "60.2", "61.2", "62.3"]
+        weasyprint-version: ["52.5", "53.3", "57.2", "60.2", "61.2", "62.3"]
 
     steps:
       - name: Checkout

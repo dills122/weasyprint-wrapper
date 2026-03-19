@@ -8,7 +8,7 @@ IMAGE_NAME="weasyprint-wrapper-smoke"
 if [[ $# -gt 0 ]]; then
   VERSIONS=("$@")
 else
-  VERSIONS=("53.3" "57.2" "60.2" "61.2" "62.3")
+  VERSIONS=("52.5" "53.3" "57.2" "60.2" "61.2" "62.3")
 fi
 
 failures=0
