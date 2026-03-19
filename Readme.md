@@ -26,25 +26,25 @@ Build output:
 ### CommonJS
 
 ```js
-const fs = require('fs');
-const weasyprint = require('weasyprint-wrapper');
+const fs = require("fs");
+const weasyprint = require("weasyprint-wrapper");
 
-weasyprint.command = '/usr/local/bin/weasyprint';
+weasyprint.command = "/usr/local/bin/weasyprint";
 
-weasyprint('https://example.com', { pageSize: 'letter', mediaType: 'print' }).pipe(
-  fs.createWriteStream('out.pdf')
+weasyprint("https://example.com", { pageSize: "letter", mediaType: "print" }).pipe(
+  fs.createWriteStream("out.pdf")
 );
 ```
 
 ### ESM
 
 ```js
-import fs from 'node:fs';
-import weasyprint from 'weasyprint-wrapper';
+import fs from "node:fs";
+import weasyprint from "weasyprint-wrapper";
 
-weasyprint.command = '/usr/local/bin/weasyprint';
+weasyprint.command = "/usr/local/bin/weasyprint";
 
-weasyprint('<h1>Test</h1><p>Hello world</p>').pipe(fs.createWriteStream('out.pdf'));
+weasyprint("<h1>Test</h1><p>Hello world</p>").pipe(fs.createWriteStream("out.pdf"));
 ```
 
 ### Input Types
@@ -55,20 +55,20 @@ weasyprint('<h1>Test</h1><p>Hello world</p>').pipe(fs.createWriteStream('out.pdf
 - readable stream
 
 ```js
-const fs = require('fs');
-const weasyprint = require('weasyprint-wrapper');
+const fs = require("fs");
+const weasyprint = require("weasyprint-wrapper");
 
-weasyprint(fs.createReadStream('file.html')).pipe(fs.createWriteStream('out-from-stream.pdf'));
+weasyprint(fs.createReadStream("file.html")).pipe(fs.createWriteStream("out-from-stream.pdf"));
 
-weasyprint('https://example.com', { output: 'out-direct.pdf' });
+weasyprint("https://example.com", { output: "out-direct.pdf" });
 
-weasyprint('https://example.com', { pageSize: 'letter' }, (err, stream) => {
+weasyprint("https://example.com", { pageSize: "letter" }, (err, stream) => {
   if (err) {
     console.error(err);
     return;
   }
 
-  stream.pipe(fs.createWriteStream('out-callback.pdf'));
+  stream.pipe(fs.createWriteStream("out-callback.pdf"));
 });
 ```
 

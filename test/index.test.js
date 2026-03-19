@@ -1,7 +1,7 @@
-const assert = require('assert');
-const { EventEmitter } = require('events');
-const { PassThrough, Writable, Readable } = require('stream');
-const weasyprint = require('../index');
+const assert = require("assert");
+const { EventEmitter } = require("events");
+const { PassThrough, Writable, Readable } = require("stream");
+const weasyprint = require("../index");
 
 class CaptureWritable extends Writable {
   constructor() {
@@ -15,7 +15,7 @@ class CaptureWritable extends Writable {
   }
 
   toString() {
-    return Buffer.concat(this.chunks).toString('utf8');
+    return Buffer.concat(this.chunks).toString("utf8");
   }
 }
 
@@ -38,7 +38,7 @@ async function run(name, fn) {
 }
 
 (async () => {
-  await run('builds option args correctly for html input', () => {
+  await run("builds option args correctly for html input", () => {
     const invocations = [];
     const child = createMockChild();
 
@@ -47,74 +47,74 @@ async function run(name, fn) {
       return child;
     };
 
-    weasyprint('<h1>Hi</h1>', { pageSize: 'letter', mediaType: 'print' });
+    weasyprint("<h1>Hi</h1>", { pageSize: "letter", mediaType: "print" });
 
     assert.strictEqual(invocations.length, 1);
-    assert.strictEqual(invocations[0].command, 'weasyprint');
+    assert.strictEqual(invocations[0].command, "weasyprint");
     assert.deepStrictEqual(invocations[0].args, [
-      '--page-size',
-      'letter',
-      '--media-type',
-      'print',
-      '-',
-      '-',
+      "--page-size",
+      "letter",
+      "--media-type",
+      "print",
+      "-",
+      "-",
     ]);
 
-    child.emit('close', 0);
+    child.emit("close", 0);
   });
 
-  await run('uses url directly and does not write to stdin', () => {
+  await run("uses url directly and does not write to stdin", () => {
     const child = createMockChild();
 
     weasyprint._spawn = (_command, args) => {
-      assert.deepStrictEqual(args, ['https://example.com', '-']);
+      assert.deepStrictEqual(args, ["https://example.com", "-"]);
       return child;
     };
 
-    weasyprint('https://example.com');
+    weasyprint("https://example.com");
 
-    assert.strictEqual(child.stdin.toString(), '');
-    child.emit('close', 0);
+    assert.strictEqual(child.stdin.toString(), "");
+    child.emit("close", 0);
   });
 
-  await run('pipes stream input into stdin', async () => {
+  await run("pipes stream input into stdin", async () => {
     const child = createMockChild();
 
     weasyprint._spawn = () => child;
 
-    const src = Readable.from(['<h1>', 'Hello', '</h1>']);
+    const src = Readable.from(["<h1>", "Hello", "</h1>"]);
     weasyprint(src);
 
     await new Promise((resolve, reject) => {
-      child.stdin.on('finish', resolve);
-      child.stdin.on('error', reject);
+      child.stdin.on("finish", resolve);
+      child.stdin.on("error", reject);
     });
 
-    assert.strictEqual(child.stdin.toString(), '<h1>Hello</h1>');
-    child.emit('close', 0);
+    assert.strictEqual(child.stdin.toString(), "<h1>Hello</h1>");
+    child.emit("close", 0);
   });
 
-  await run('returns callback error on non-zero exit', async () => {
+  await run("returns callback error on non-zero exit", async () => {
     const child = createMockChild();
 
     weasyprint._spawn = () => child;
 
     const result = await new Promise((resolve) => {
-      weasyprint('https://example.com', {}, (err) => {
+      weasyprint("https://example.com", {}, (err) => {
         resolve(err);
       });
 
-      child.stderr.write('bad flag');
+      child.stderr.write("bad flag");
       child.stderr.end();
-      child.emit('close', 2);
+      child.emit("close", 2);
     });
 
     assert.ok(result instanceof Error);
     assert.strictEqual(result.code, 2);
-    assert.ok(result.message.includes('bad flag'));
+    assert.ok(result.message.includes("bad flag"));
   });
 
-  await run('throws on unsupported stdin input', () => {
+  await run("throws on unsupported stdin input", () => {
     let spawnCalled = false;
     const child = createMockChild();
     weasyprint._spawn = () => {
@@ -123,7 +123,7 @@ async function run(name, fn) {
     };
 
     assert.throws(() => {
-      weasyprint({ not: 'valid input' });
+      weasyprint({ not: "valid input" });
     }, /input must be a URL string/);
     assert.strictEqual(spawnCalled, false);
   });

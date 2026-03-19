@@ -1,14 +1,14 @@
-const fs = require('fs');
-const os = require('os');
-const path = require('path');
-const { spawnSync } = require('child_process');
-const { pathToFileURL } = require('url');
+const fs = require("fs");
+const os = require("os");
+const path = require("path");
+const { spawnSync } = require("child_process");
+const { pathToFileURL } = require("url");
 
-const weasyprintCjs = require('../dist/index.cjs');
+const weasyprintCjs = require("../dist/index.cjs");
 
-const root = path.resolve(__dirname, '..');
-const fixturePath = path.join(root, 'fixtures', 'smoke.html');
-const weasyprintBin = process.env.WEASYPRINT_BIN || 'weasyprint';
+const root = path.resolve(__dirname, "..");
+const fixturePath = path.join(root, "fixtures", "smoke.html");
+const weasyprintBin = process.env.WEASYPRINT_BIN || "weasyprint";
 
 function assert(condition, message) {
   if (!condition) {
@@ -17,30 +17,30 @@ function assert(condition, message) {
 }
 
 function ensureCommandAvailable() {
-  const probe = spawnSync(weasyprintBin, ['--version'], { encoding: 'utf8' });
+  const probe = spawnSync(weasyprintBin, ["--version"], { encoding: "utf8" });
 
   if (probe.error || probe.status !== 0) {
     const reason = probe.error
       ? probe.error.message
-      : (probe.stderr || probe.stdout || 'unknown error').trim();
+      : (probe.stderr || probe.stdout || "unknown error").trim();
     throw new Error(
       `Cannot execute weasyprint binary '${weasyprintBin}'. Set WEASYPRINT_BIN if needed. Details: ${reason}`
     );
   }
 
-  process.stdout.write(`using weasyprint: ${(probe.stdout || '').trim()}\n`);
+  process.stdout.write(`using weasyprint: ${(probe.stdout || "").trim()}\n`);
 }
 
 function assertPdf(pathname) {
   const stat = fs.statSync(pathname);
   assert(stat.size > 500, `Expected non-trivial PDF size for ${pathname}, got ${stat.size} bytes`);
 
-  const fd = fs.openSync(pathname, 'r');
+  const fd = fs.openSync(pathname, "r");
   const buf = Buffer.alloc(5);
   fs.readSync(fd, buf, 0, 5, 0);
   fs.closeSync(fd);
 
-  assert(buf.toString('ascii') === '%PDF-', `Expected PDF header in ${pathname}`);
+  assert(buf.toString("ascii") === "%PDF-", `Expected PDF header in ${pathname}`);
 }
 
 function runConversion(api, input, outputPath, label) {
@@ -88,10 +88,10 @@ function runConversion(api, input, outputPath, label) {
       maybeFinish();
     });
 
-    stream.on('error', settle);
-    out.on('error', settle);
+    stream.on("error", settle);
+    out.on("error", settle);
 
-    out.on('finish', () => {
+    out.on("finish", () => {
       outputDone = true;
       maybeFinish();
     });
@@ -103,25 +103,25 @@ function runConversion(api, input, outputPath, label) {
 async function main() {
   ensureCommandAvailable();
 
-  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'weasyprint-wrapper-'));
-  const html = fs.readFileSync(fixturePath, 'utf8');
+  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "weasyprint-wrapper-"));
+  const html = fs.readFileSync(fixturePath, "utf8");
   const urlInput = pathToFileURL(fixturePath).href;
 
   weasyprintCjs.command = weasyprintBin;
-  await runConversion(weasyprintCjs, urlInput, path.join(tmpDir, 'cjs-url.pdf'), 'cjs url input');
+  await runConversion(weasyprintCjs, urlInput, path.join(tmpDir, "cjs-url.pdf"), "cjs url input");
 
   const streamInput = fs.createReadStream(fixturePath);
   await runConversion(
     weasyprintCjs,
     streamInput,
-    path.join(tmpDir, 'cjs-stream.pdf'),
-    'cjs stream input'
+    path.join(tmpDir, "cjs-stream.pdf"),
+    "cjs stream input"
   );
 
-  const esmModule = await import(pathToFileURL(path.join(root, 'dist', 'index.mjs')).href);
+  const esmModule = await import(pathToFileURL(path.join(root, "dist", "index.mjs")).href);
   const weasyprintEsm = esmModule.default;
   weasyprintEsm.command = weasyprintBin;
-  await runConversion(weasyprintEsm, html, path.join(tmpDir, 'esm-html.pdf'), 'esm html input');
+  await runConversion(weasyprintEsm, html, path.join(tmpDir, "esm-html.pdf"), "esm html input");
 
   process.stdout.write(`smoke artifacts: ${tmpDir}\n`);
 }

@@ -1,32 +1,32 @@
 function dasherize(input) {
   return input
-    .replace(/\W+/g, '-')
-    .replace(/([a-z\d])([A-Z])/g, '$1-$2')
+    .replace(/\W+/g, "-")
+    .replace(/([a-z\d])([A-Z])/g, "$1-$2")
     .toLowerCase();
 }
 
 function isReadableStream(value) {
-  return !!value && typeof value.pipe === 'function' && typeof value.on === 'function';
+  return !!value && typeof value.pipe === "function" && typeof value.on === "function";
 }
 
 function isUrl(value) {
-  return typeof value === 'string' && /^(https?|file):\/\//i.test(value.trim());
+  return typeof value === "string" && /^(https?|file):\/\//i.test(value.trim());
 }
 
 function getInputMode(input) {
   if (isUrl(input)) {
-    return 'url';
+    return "url";
   }
 
-  if (typeof input === 'string' || Buffer.isBuffer(input)) {
-    return 'data';
+  if (typeof input === "string" || Buffer.isBuffer(input)) {
+    return "data";
   }
 
   if (isReadableStream(input)) {
-    return 'stream';
+    return "stream";
   }
 
-  return 'invalid';
+  return "invalid";
 }
 
 function normalizeOptions(options) {
@@ -41,7 +41,7 @@ function buildOptionArgs(options) {
   const args = [];
 
   Object.keys(options).forEach((key) => {
-    if (key === 'output') {
+    if (key === "output") {
       return;
     }
 
@@ -75,12 +75,12 @@ function buildArgsAndInput(input, options) {
   const optionArgs = buildOptionArgs(options);
   const inputMode = getInputMode(input);
 
-  if (inputMode === 'invalid') {
-    throw new TypeError('input must be a URL string, HTML string, Buffer, or readable stream');
+  if (inputMode === "invalid") {
+    throw new TypeError("input must be a URL string, HTML string, Buffer, or readable stream");
   }
 
-  const inputArg = inputMode === 'url' ? input.trim() : '-';
-  const outputArg = output ? String(output) : '-';
+  const inputArg = inputMode === "url" ? input.trim() : "-";
+  const outputArg = output ? String(output) : "-";
 
   return {
     args: [...optionArgs, inputArg, outputArg],
@@ -97,8 +97,8 @@ function createExitError(code, signal, stderr) {
     details.push(`signal ${signal}`);
   }
 
-  const suffix = stderr && stderr.trim() ? `: ${stderr.trim()}` : '';
-  const err = new Error(`weasyprint exited with ${details.join(', ')}${suffix}`);
+  const suffix = stderr && stderr.trim() ? `: ${stderr.trim()}` : "";
+  const err = new Error(`weasyprint exited with ${details.join(", ")}${suffix}`);
   err.code = code;
   err.signal = signal;
   err.stderr = stderr;
@@ -107,7 +107,7 @@ function createExitError(code, signal, stderr) {
 
 function createWeasyprint(defaultSpawn) {
   function weasyprint(input, options, callback) {
-    if (typeof options === 'function') {
+    if (typeof options === "function") {
       callback = options;
       options = {};
     }
@@ -117,12 +117,12 @@ function createWeasyprint(defaultSpawn) {
 
     const spawnImpl = weasyprint._spawn || defaultSpawn;
     const child = spawnImpl(weasyprint.command, args, {
-      stdio: ['pipe', 'pipe', 'pipe'],
+      stdio: ["pipe", "pipe", "pipe"],
     });
 
-    let stderr = '';
+    let stderr = "";
     if (child.stderr) {
-      child.stderr.on('data', (chunk) => {
+      child.stderr.on("data", (chunk) => {
         stderr += String(chunk);
         if (stderr.length > 4000) {
           stderr = stderr.slice(-4000);
@@ -132,7 +132,7 @@ function createWeasyprint(defaultSpawn) {
 
     let done = false;
     const finalize = (err) => {
-      if (done || typeof callback !== 'function') {
+      if (done || typeof callback !== "function") {
         return;
       }
 
@@ -140,11 +140,11 @@ function createWeasyprint(defaultSpawn) {
       callback(err, child.stdout);
     };
 
-    child.on('error', (err) => {
+    child.on("error", (err) => {
       finalize(err);
     });
 
-    child.on('close', (code, signal) => {
+    child.on("close", (code, signal) => {
       if (code === 0) {
         finalize(null);
         return;
@@ -153,9 +153,9 @@ function createWeasyprint(defaultSpawn) {
       finalize(createExitError(code, signal, stderr));
     });
 
-    if (inputMode === 'stream') {
+    if (inputMode === "stream") {
       input.pipe(child.stdin);
-    } else if (inputMode === 'data') {
+    } else if (inputMode === "data") {
       child.stdin.end(input);
     } else {
       child.stdin.end();
@@ -164,7 +164,7 @@ function createWeasyprint(defaultSpawn) {
     return child.stdout;
   }
 
-  weasyprint.command = 'weasyprint';
+  weasyprint.command = "weasyprint";
   weasyprint._spawn = null;
   weasyprint._internals = {
     buildOptionArgs,

@@ -4,17 +4,17 @@ module.exports = {
     node: true,
     es2022: true,
   },
-  extends: ['eslint:recommended'],
+  extends: ["eslint:recommended"],
   parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'script',
+    ecmaVersion: "latest",
+    sourceType: "script",
   },
-  ignorePatterns: ['dist/', 'artifacts/'],
+  ignorePatterns: ["dist/", "artifacts/"],
   overrides: [
     {
-      files: ['**/*.mjs'],
+      files: ["**/*.mjs"],
       parserOptions: {
-        sourceType: 'module',
+        sourceType: "module",
       },
     },
   ],

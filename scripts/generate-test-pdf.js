@@ -1,13 +1,13 @@
-const fs = require('fs');
-const path = require('path');
-const { pathToFileURL } = require('url');
+const fs = require("fs");
+const path = require("path");
+const { pathToFileURL } = require("url");
 
-const weasyprint = require('../dist/index.cjs');
+const weasyprint = require("../dist/index.cjs");
 
-const root = path.resolve(__dirname, '..');
-const fixturePath = path.join(root, 'fixtures', 'smoke.html');
-const outPath = path.join(root, 'artifacts', 'test-smoke.pdf');
-const weasyprintBin = process.env.WEASYPRINT_BIN || 'weasyprint';
+const root = path.resolve(__dirname, "..");
+const fixturePath = path.join(root, "fixtures", "smoke.html");
+const outPath = path.join(root, "artifacts", "test-smoke.pdf");
+const weasyprintBin = process.env.WEASYPRINT_BIN || "weasyprint";
 
 function assert(condition, message) {
   if (!condition) {
@@ -19,12 +19,12 @@ function assertPdf(pathname) {
   const stat = fs.statSync(pathname);
   assert(stat.size > 500, `Expected non-trivial PDF size for ${pathname}, got ${stat.size} bytes`);
 
-  const fd = fs.openSync(pathname, 'r');
+  const fd = fs.openSync(pathname, "r");
   const buf = Buffer.alloc(5);
   fs.readSync(fd, buf, 0, 5, 0);
   fs.closeSync(fd);
 
-  assert(buf.toString('ascii') === '%PDF-', `Expected PDF header in ${pathname}`);
+  assert(buf.toString("ascii") === "%PDF-", `Expected PDF header in ${pathname}`);
 }
 
 function run() {
@@ -77,10 +77,10 @@ function run() {
       maybeFinish();
     });
 
-    stream.on('error', settle);
-    out.on('error', settle);
+    stream.on("error", settle);
+    out.on("error", settle);
 
-    out.on('finish', () => {
+    out.on("finish", () => {
       outputDone = true;
       maybeFinish();
     });
