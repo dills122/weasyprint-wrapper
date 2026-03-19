@@ -25,6 +25,18 @@ Build output:
 - `dist/index.cjs` for CommonJS (`require`)
 - `dist/index.mjs` for ESM (`import`)
 
+## Release
+
+Release automation runs from `.github/workflows/release.yml` when a tag like `v1.0.0` is pushed.
+
+What it does:
+
+- validates tag matches `package.json` version
+- runs quality gates (`npm run check`, `npm run pack:check`)
+- publishes to npmjs (`NPM_TOKEN` secret required)
+- creates a GitHub Release with generated release notes and attached npm tarball
+- publishes to GitHub Packages only for scoped package names (automatically skipped for unscoped packages)
+
 ## Usage
 
 ### CommonJS
