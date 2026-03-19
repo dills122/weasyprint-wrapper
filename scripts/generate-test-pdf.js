@@ -28,40 +28,68 @@ function assertPdf(pathname) {
 }
 
 function run() {
-  fs.mkdirSync(path.dirname(outPath), { recursive: true });
-  weasyprint.command = weasyprintBin;
+  return new Promise((resolve, reject) => {
+    fs.mkdirSync(path.dirname(outPath), { recursive: true });
+    weasyprint.command = weasyprintBin;
 
-  const inputUrl = pathToFileURL(fixturePath).href;
+    const inputUrl = pathToFileURL(fixturePath).href;
+    const out = fs.createWriteStream(outPath);
 
-  const stream = weasyprint(inputUrl, {}, (err) => {
-    if (err) {
-      throw err;
+    let callbackDone = false;
+    let callbackError = null;
+    let outputDone = false;
+    let settled = false;
+
+    function settle(err) {
+      if (settled) {
+        return;
+      }
+      settled = true;
+      if (err) {
+        reject(err);
+      } else {
+        resolve();
+      }
     }
-  });
 
-  const out = fs.createWriteStream(outPath);
+    function maybeFinish() {
+      if (!callbackDone || !outputDone) {
+        return;
+      }
 
-  stream.on('error', (err) => {
-    process.stderr.write(`generate failed: ${err.message}\n`);
-    process.exitCode = 1;
-  });
+      if (callbackError) {
+        settle(callbackError);
+        return;
+      }
 
-  out.on('error', (err) => {
-    process.stderr.write(`write failed: ${err.message}\n`);
-    process.exitCode = 1;
-  });
-
-  out.on('finish', () => {
-    try {
-      assertPdf(outPath);
-      process.stdout.write(`ok - wrote ${outPath}\n`);
-    } catch (err) {
-      process.stderr.write(`validation failed: ${err.message}\n`);
-      process.exitCode = 1;
+      try {
+        assertPdf(outPath);
+        process.stdout.write(`ok - wrote ${outPath}\n`);
+        settle();
+      } catch (err) {
+        settle(err);
+      }
     }
-  });
 
-  stream.pipe(out);
+    const stream = weasyprint(inputUrl, {}, (err) => {
+      callbackDone = true;
+      callbackError = err || null;
+      maybeFinish();
+    });
+
+    stream.on('error', settle);
+    out.on('error', settle);
+
+    out.on('finish', () => {
+      outputDone = true;
+      maybeFinish();
+    });
+
+    stream.pipe(out);
+  });
 }
 
-run();
+run().catch((err) => {
+  process.stderr.write(`smoke:pdf failed: ${err.message}\n`);
+  process.exitCode = 1;
+});
