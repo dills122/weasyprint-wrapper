@@ -1,5 +1,9 @@
 # Weasyprint Wrapper
 
+[![CodeFactor](https://www.codefactor.io/repository/github/dills122/weasyprint-wrapper/badge)](https://www.codefactor.io/repository/github/dills122/weasyprint-wrapper)
+[![CI](https://github.com/dills122/weasyprint-wrapper/actions/workflows/ci.yml/badge.svg)](https://github.com/dills122/weasyprint-wrapper/actions/workflows/ci.yml)
+[![WeasyPrint Smoke](https://github.com/dills122/weasyprint-wrapper/actions/workflows/weasyprint-smoke.yml/badge.svg)](https://github.com/dills122/weasyprint-wrapper/actions/workflows/weasyprint-smoke.yml)
+
 A Node.js wrapper around the `weasyprint` CLI.
 
 ## Install
