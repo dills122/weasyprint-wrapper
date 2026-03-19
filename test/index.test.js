@@ -53,7 +53,7 @@ async function run(name, fn) {
     assert.strictEqual(invocations[0].command, 'weasyprint');
     assert.deepStrictEqual(
       invocations[0].args,
-      ['--page-size', 'letter', '--media-type', 'print', '-f', 'pdf', '-', '-']
+      ['--page-size', 'letter', '--media-type', 'print', '-', '-']
     );
 
     child.emit('close', 0);
@@ -63,7 +63,7 @@ async function run(name, fn) {
     const child = createMockChild();
 
     weasyprint._spawn = (_command, args) => {
-      assert.deepStrictEqual(args, ['-f', 'pdf', 'https://example.com', '-']);
+      assert.deepStrictEqual(args, ['https://example.com', '-']);
       return child;
     };
 

@@ -79,13 +79,6 @@ function buildArgsAndInput(input, options) {
     throw new TypeError('input must be a URL string, HTML string, Buffer, or readable stream');
   }
 
-  const hasFormat = Object.prototype.hasOwnProperty.call(options, 'f')
-    || Object.prototype.hasOwnProperty.call(options, 'format');
-
-  if (!output && !hasFormat) {
-    optionArgs.push('-f', 'pdf');
-  }
-
   const inputArg = inputMode === 'url' ? input.trim() : '-';
   const outputArg = output ? String(output) : '-';
 

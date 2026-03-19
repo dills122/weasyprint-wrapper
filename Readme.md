@@ -73,6 +73,32 @@ weasyprint('https://example.com', { pageSize: 'letter' }, (err, stream) => {
 });
 ```
 
+## Real-World Smoke Test
+
+Prerequisites:
+
+- `weasyprint` installed locally
+- any native dependencies required by your OS install of `weasyprint`
+
+Run:
+
+```bash
+npm run test:real
+```
+
+If your binary is not on `PATH`:
+
+```bash
+WEASYPRINT_BIN=/absolute/path/to/weasyprint npm run test:real
+```
+
+What it validates:
+
+- CJS API with `file://` URL input
+- CJS API with stream input
+- ESM API with HTML string input
+- generated outputs are real PDFs (`%PDF-` header and non-trivial file size)
+
 ## Options
 
 Options are converted to CLI flags:
@@ -85,5 +111,3 @@ Options are converted to CLI flags:
 Special option:
 
 - `output`: output file path (`-` is used by default for stdout)
-
-When no output file is set and no explicit format is passed, the wrapper defaults to `-f pdf`.
