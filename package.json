@@ -1,6 +1,6 @@
 {
   "name": "weasyprint-wrapper",
-  "version": "0.1.4",
+  "version": "1.0.0",
   "description": "Node.js wrapper around the WeasyPrint CLI",
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
