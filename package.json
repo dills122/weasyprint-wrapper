@@ -1,6 +1,6 @@
 {
   "name": "weasyprint-wrapper",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Node.js wrapper around the WeasyPrint CLI",
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
@@ -29,6 +29,7 @@
     "prepack": "npm run build",
     "test": "npm run build && node test/index.test.js && node test/esm.test.mjs",
     "test:real": "npm run build && node scripts/real-world-smoke.js",
+    "test:real:docker": "scripts/docker-smoke-matrix.sh",
     "smoke:pdf": "npm run build && node scripts/generate-test-pdf.js"
   },
   "keywords": [

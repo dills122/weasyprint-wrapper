@@ -70,7 +70,13 @@ function buildOptionArgs(options) {
   return args;
 }
 
-function buildArgsAndInput(input, options) {
+function hasExplicitFormat(options) {
+  return [options.f, options.format].some(
+    (value) => value !== undefined && value !== null && value !== false
+  );
+}
+
+function buildArgsAndInput(input, options, compat = {}) {
   const output = options.output;
   const optionArgs = buildOptionArgs(options);
   const inputMode = getInputMode(input);
@@ -81,6 +87,12 @@ function buildArgsAndInput(input, options) {
 
   const inputArg = inputMode === "url" ? input.trim() : "-";
   const outputArg = output ? String(output) : "-";
+  const needsStdoutFormat =
+    compat.forceStdoutPdfFormat === true && outputArg === "-" && !hasExplicitFormat(options);
+
+  if (needsStdoutFormat) {
+    optionArgs.push("-f", "pdf");
+  }
 
   return {
     args: [...optionArgs, inputArg, outputArg],
@@ -105,6 +117,16 @@ function createExitError(code, signal, stderr) {
   return err;
 }
 
+function probeSupportsStdoutFormatFlag(command) {
+  const probe = spawnSync(command, ["--help"], { encoding: "utf8" });
+  if (probe.error || probe.status !== 0) {
+    return false;
+  }
+
+  const helpText = `${probe.stdout || ""}\n${probe.stderr || ""}`;
+  return /(^|\s)-f(\s|,|$)/.test(helpText);
+}
+
 function createWeasyprint(defaultSpawn) {
   function weasyprint(input, options, callback) {
     if (typeof options === "function") {
@@ -113,9 +135,30 @@ function createWeasyprint(defaultSpawn) {
     }
 
     const normalizedOptions = normalizeOptions(options);
-    const { args, inputMode } = buildArgsAndInput(input, normalizedOptions);
-
     const spawnImpl = weasyprint._spawn || defaultSpawn;
+    let forceStdoutPdfFormat = false;
+    const shouldProbe =
+      spawnImpl === defaultSpawn &&
+      !hasExplicitFormat(normalizedOptions) &&
+      !normalizedOptions.output;
+
+    if (shouldProbe) {
+      if (
+        !weasyprint._stdoutFormatFlagProbe ||
+        weasyprint._stdoutFormatFlagProbe.command !== weasyprint.command
+      ) {
+        weasyprint._stdoutFormatFlagProbe = {
+          command: weasyprint.command,
+          supported: probeSupportsStdoutFormatFlag(weasyprint.command),
+        };
+      }
+
+      forceStdoutPdfFormat = weasyprint._stdoutFormatFlagProbe.supported;
+    }
+
+    const { args, inputMode } = buildArgsAndInput(input, normalizedOptions, {
+      forceStdoutPdfFormat,
+    });
     const child = spawnImpl(weasyprint.command, args, {
       stdio: ["pipe", "pipe", "pipe"],
     });
@@ -166,14 +209,18 @@ function createWeasyprint(defaultSpawn) {
 
   weasyprint.command = "weasyprint";
   weasyprint._spawn = null;
+  weasyprint._stdoutFormatFlagProbe = null;
   weasyprint._internals = {
     buildOptionArgs,
     buildArgsAndInput,
+    hasExplicitFormat,
     getInputMode,
     isUrl,
+    probeSupportsStdoutFormatFlag,
   };
 
   return weasyprint;
 }
 
 module.exports = createWeasyprint;
+const { spawnSync } = require("child_process");

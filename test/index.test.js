@@ -128,5 +128,23 @@ async function run(name, fn) {
     assert.strictEqual(spawnCalled, false);
   });
 
+  await run("supports forcing stdout format flag for legacy cli", () => {
+    const forced = weasyprint._internals.buildArgsAndInput(
+      "<h1>Hi</h1>",
+      {},
+      {
+        forceStdoutPdfFormat: true,
+      }
+    );
+    assert.deepStrictEqual(forced.args, ["-f", "pdf", "-", "-"]);
+
+    const explicit = weasyprint._internals.buildArgsAndInput(
+      "<h1>Hi</h1>",
+      { f: "png" },
+      { forceStdoutPdfFormat: true }
+    );
+    assert.deepStrictEqual(explicit.args, ["-f", "png", "-", "-"]);
+  });
+
   weasyprint._spawn = null;
 })();

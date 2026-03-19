@@ -6,6 +6,12 @@
 
 A Node.js wrapper around the `weasyprint` CLI.
 
+CI runs the real-world smoke test against multiple commonly used `weasyprint` releases: `52.5`, `53.3`, `57.2`, `60.2`, `61.2`, and `62.3`.
+
+Main CI (`.github/workflows/ci.yml`) also runs a latest-unpinned `weasyprint` smoke test on push/PR.
+
+A separate scheduled workflow (`.github/workflows/weasyprint-latest-nightly.yml`) runs weekly against the latest unpinned `weasyprint` release and can also be run manually from Actions.
+
 ## Install
 
 ```bash
@@ -116,6 +122,20 @@ Run:
 
 ```bash
 npm run test:real
+```
+
+### Local Docker Matrix (No Host Pollution)
+
+Run the same multi-version smoke matrix locally in Docker:
+
+```bash
+npm run test:real:docker
+```
+
+Optional: pass explicit versions:
+
+```bash
+scripts/docker-smoke-matrix.sh 52.5 53.3 57.2 60.2 61.2 62.3
 ```
 
 If your binary is not on `PATH`:
