@@ -6,6 +6,8 @@
 
 A Node.js wrapper around the `weasyprint` CLI.
 
+CI runs the real-world smoke test against multiple commonly used `weasyprint` releases: `53.3`, `60.2`, and `62.3`.
+
 ## Install
 
 ```bash
