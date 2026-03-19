@@ -80,6 +80,23 @@ Prerequisites:
 - `weasyprint` installed locally
 - any native dependencies required by your OS install of `weasyprint`
 
+### macOS (Apple Silicon)
+
+Install with Homebrew:
+
+```bash
+brew update
+brew install weasyprint
+weasyprint --version
+which weasyprint
+```
+
+Expected binary path on Apple Silicon:
+
+```bash
+/opt/homebrew/bin/weasyprint
+```
+
 Run:
 
 ```bash
@@ -90,6 +107,12 @@ If your binary is not on `PATH`:
 
 ```bash
 WEASYPRINT_BIN=/absolute/path/to/weasyprint npm run test:real
+```
+
+Example for Apple Silicon Homebrew:
+
+```bash
+WEASYPRINT_BIN=/opt/homebrew/bin/weasyprint npm run test:real
 ```
 
 What it validates:
