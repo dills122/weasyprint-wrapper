@@ -16,7 +16,24 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        weasyprint-version: ["52.5", "53.3", "57.2", "60.2", "61.2", "62.3"]
+        include:
+          - weasyprint-version: "52.5"
+            pydyf-version: "0.10.0"
+          - weasyprint-version: "53.3"
+            pydyf-version: "0.10.0"
+          - weasyprint-version: "57.2"
+            pydyf-version: "0.10.0"
+          - weasyprint-version: "60.2"
+            pydyf-version: "0.10.0"
+          - weasyprint-version: "61.2"
+            pydyf-version: "0.10.0"
+          - weasyprint-version: "62.3"
+            pydyf-version: "0.10.0"
+          - weasyprint-version: "65.1"
+          - weasyprint-version: "66.0"
+          - weasyprint-version: "67.0"
+          - weasyprint-version: "68.1"
+          - weasyprint-version: "69.0"
 
     steps:
       - name: Checkout
@@ -48,9 +65,14 @@ jobs:
       - name: Install WeasyPrint CLI
         run: |
           python -m pip install --upgrade pip
-          python -m pip install \
-            "weasyprint==${{ matrix.weasyprint-version }}" \
-            "pydyf==0.10.0"
+          if [ -n "${{ matrix.pydyf-version }}" ]; then
+            python -m pip install \
+              "weasyprint==${{ matrix.weasyprint-version }}" \
+              "pydyf==${{ matrix.pydyf-version }}"
+          else
+            python -m pip install \
+              "weasyprint==${{ matrix.weasyprint-version }}"
+          fi
           weasyprint --version
           which weasyprint
 

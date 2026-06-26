@@ -1,6 +1,7 @@
 FROM node:22-bookworm-slim
 
 ARG WEASYPRINT_VERSION
+ARG PYDYF_VERSION
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV CI=1
@@ -18,9 +19,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   && rm -rf /var/lib/apt/lists/*
 
 RUN python3 -m pip install --no-cache-dir --break-system-packages --upgrade pip \
-  && python3 -m pip install --no-cache-dir --break-system-packages \
-    "weasyprint==${WEASYPRINT_VERSION}" \
-    "pydyf==0.10.0" \
+  && if [ -n "${PYDYF_VERSION}" ]; then \
+    python3 -m pip install --no-cache-dir --break-system-packages \
+      "weasyprint==${WEASYPRINT_VERSION}" \
+      "pydyf==${PYDYF_VERSION}"; \
+  else \
+    python3 -m pip install --no-cache-dir --break-system-packages \
+      "weasyprint==${WEASYPRINT_VERSION}"; \
+  fi \
   && weasyprint --version
 
 WORKDIR /work
