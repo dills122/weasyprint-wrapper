@@ -8,7 +8,7 @@ IMAGE_NAME="weasyprint-wrapper-smoke"
 if [[ $# -gt 0 ]]; then
   VERSIONS=("$@")
 else
-  VERSIONS=("52.5" "53.3" "57.2" "60.2" "61.2" "62.3")
+  VERSIONS=("52.5" "53.3" "57.2" "60.2" "61.2" "62.3" "65.1" "66.0" "67.0" "68.1" "69.0")
 fi
 
 failures=0
@@ -18,12 +18,18 @@ echo "Versions: ${VERSIONS[*]}"
 
 for version in "${VERSIONS[@]}"; do
   image_tag="${IMAGE_NAME}:${version}"
+  pydyf_version=""
+  case "${version}" in
+    5[2-9].* | 6[0-4].*) pydyf_version="0.10.0" ;;
+  esac
+
   echo
   echo "=== [${version}] build image ==="
 
   if ! docker build \
     --file "${DOCKERFILE_PATH}" \
     --build-arg "WEASYPRINT_VERSION=${version}" \
+    --build-arg "PYDYF_VERSION=${pydyf_version}" \
     --tag "${image_tag}" \
     "${ROOT_DIR}"; then
     echo "FAIL [${version}] docker build"
