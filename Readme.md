@@ -42,6 +42,7 @@ npm publishing uses GitHub Actions trusted publishing. Configure the `weasyprint
 - repository: `weasyprint-wrapper`
 - workflow filename: `release.yml`
 - environment: none
+- allowed actions: allow direct publishing with `npm publish`
 
 What it does:
 
