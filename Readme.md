@@ -36,11 +36,19 @@ Build output:
 
 Release automation runs from `.github/workflows/release.yml` when a tag like `v1.0.0` is pushed.
 
+npm publishing uses GitHub Actions trusted publishing. Configure the `weasyprint-wrapper` package on npmjs with this trusted publisher before pushing a release tag:
+
+- organization or user: `dills122`
+- repository: `weasyprint-wrapper`
+- workflow filename: `release.yml`
+- environment: none
+
 What it does:
 
+- validates the tag points at the current `master` commit
 - validates tag matches `package.json` version
 - runs quality gates (`npm run check`, `npm run pack:check`)
-- publishes to npmjs (`NPM_TOKEN` secret required)
+- publishes to npmjs through trusted publishing (OIDC; no npm token secret required)
 - creates a GitHub Release with generated release notes and attached npm tarball
 - publishes to GitHub Packages only for scoped package names (automatically skipped for unscoped packages)
 
