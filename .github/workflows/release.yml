@@ -38,7 +38,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v6
         with:
-          node-version: 24
+          node-version: 26
           cache: npm
 
       - name: Read package metadata
@@ -82,7 +82,7 @@ jobs:
       - name: Setup Node for npmjs
         uses: actions/setup-node@v6
         with:
-          node-version: 24
+          node-version: 26
           package-manager-cache: false
           registry-url: https://registry.npmjs.org
 
@@ -109,7 +109,7 @@ jobs:
       - name: Setup Node for GitHub Packages
         uses: actions/setup-node@v6
         with:
-          node-version: 24
+          node-version: 26
           cache: npm
           registry-url: https://npm.pkg.github.com
 
@@ -139,7 +139,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v6
         with:
-          node-version: 24
+          node-version: 26
           cache: npm
 
       - name: Install dependencies

@@ -34,6 +34,7 @@ jobs:
           - weasyprint-version: "67.0"
           - weasyprint-version: "68.1"
           - weasyprint-version: "69.0"
+          - weasyprint-version: "70.0"
 
     steps:
       - name: Checkout
@@ -47,7 +48,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 26
           cache: npm
 
       - name: Install WeasyPrint system dependencies
